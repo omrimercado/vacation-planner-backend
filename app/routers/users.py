@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserRead
 from app.models.user import User
 from app.db.deps import get_db
+from typing import List
 
 router = APIRouter()
 
@@ -24,3 +25,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+@router.get("/", response_model=List[UserRead], summary="List all users")
+def list_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
